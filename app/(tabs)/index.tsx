@@ -6,8 +6,10 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { auth } from '../../firebaseConfig';
 
 export default function HomeScreen() {
+  console.log('Firebase initialised:', auth);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,6 +19,10 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
+        <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Firebase Test</ThemedText>
+        <ThemedText>Auth object exists: {auth ? 'Yes!' : 'No'}</ThemedText>
+      </ThemedView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome</ThemedText>
         <HelloWave />
