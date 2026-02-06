@@ -1,15 +1,29 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { signOut } from 'firebase/auth';
+import { Alert, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { auth } from '../../firebaseConfig';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-import { auth } from '../../firebaseConfig';
 
 export default function HomeScreen() {
-  console.log('Firebase initialised:', auth);
+  const router = useRouter(); //Set up routing
+
+  //Logout function
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); //sign out from Firebase
+      router.replace('./auth/login'); //Navigate back to login
+    } catch (error:any){
+      Alert.alert('Error', 'Failed to log out');
+      console.error(error);
+    }
+  };
+
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -19,14 +33,18 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-        <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Firebase Test</ThemedText>
-        <ThemedText>Auth object exists: {auth ? 'Yes!' : 'No'}</ThemedText>
-      </ThemedView>
+
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome</ThemedText>
         <HelloWave />
       </ThemedView>
+      
+     {/* Logout Button */}
+     <TouchableOpacity style = {styles.logoutButton} onPress={handleLogout}>
+         <ThemedText style = {styles.logoutText}>Log Out</ThemedText>
+     </TouchableOpacity>
+ 
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
@@ -100,5 +118,20 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+
+  //Styles for logout button
+  logoutButton: {
+    backgroundColor: '#ff4444',
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+
+  logoutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
